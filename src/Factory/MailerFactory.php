@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Mail\Factory;
 
-use FriendsOfHyperf\Mail\MailManager;
+use FriendsOfHyperf\Mail\Contract\Factory;
 
 class MailerFactory
 {
     public function __construct(
-        protected readonly MailManager $manager
+        protected readonly Factory $manager
     ) {
     }
 
