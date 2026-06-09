@@ -1,38 +1,35 @@
 # Mail
 
-[中文说明](README_CN.md)
+[English](README.md)
 
-The mail component sends view, Markdown, HTML, and plain-text messages through Symfony Mailer
-transports.
+Mail 组件通过 Symfony Mailer 传输发送视图、Markdown、HTML 和纯文本邮件。
 
-## Installation
+## 安装
 
 ```shell
 composer require friendsofhyperf/mail
 php bin/hyperf.php vendor:publish friendsofhyperf/mail
 ```
 
-Publishing the package creates `config/autoload/mail.php` and copies the mail view components to
-`storage/views/mail`. If your application does not already have the Hyperf view configuration,
-publish it separately:
+发布组件会创建 `config/autoload/mail.php`，并将邮件视图组件复制到 `storage/views/mail`。
+如果应用尚无 Hyperf 视图配置，请另行发布：
 
 ```shell
 php bin/hyperf.php vendor:publish hyperf/view
 ```
 
-The package requires PHP 8.1 or later. Some features require optional packages:
+组件要求 PHP 8.1 或更高版本。部分功能需要可选依赖：
 
-- `hyperf/devtool` provides the `gen:mail` command.
-- `aws/aws-sdk-php` is required for the `ses` and `ses-v2` transports.
-- `symfony/http-client` is required for Symfony API mail transports.
-- `symfony/mailgun-mailer` and `symfony/postmark-mailer` provide the corresponding transports.
+- `hyperf/devtool` 提供 `gen:mail` 命令。
+- `aws/aws-sdk-php` 是 `ses` 和 `ses-v2` 传输的必要依赖。
+- Symfony API 邮件传输需要 `symfony/http-client`。
+- `symfony/mailgun-mailer` 和 `symfony/postmark-mailer` 提供对应传输。
 
-## Configuration
+## 配置
 
-The published configuration defaults to the `log` mailer. Select a mailer with `MAIL_MAILER`, then
-configure it under `mail.mailers`. Supported transports are `smtp`, `sendmail`, `mail`, `mailgun`,
-`ses`, `ses-v2`, `postmark`, `log`, `array`, `failover`, and `roundrobin`. Custom transports can be
-registered with `Mail::extend()`.
+发布的配置默认使用 `log` mailer。通过 `MAIL_MAILER` 选择 mailer，并在 `mail.mailers` 下配置。
+支持的传输包括 `smtp`、`sendmail`、`mail`、`mailgun`、`ses`、`ses-v2`、`postmark`、`log`、
+`array`、`failover` 和 `roundrobin`。可使用 `Mail::extend()` 注册自定义传输。
 
 ```php
 // config/autoload/mail.php
@@ -72,23 +69,20 @@ return [
 ];
 ```
 
-A mailer-specific `from`, `reply_to`, `to`, or `return_path` value overrides the corresponding
-global address. A global `to` address also removes the original To, Cc, and Bcc recipients before
-sending, which is useful in development.
+mailer 专属的 `from`、`reply_to`、`to` 或 `return_path` 会覆盖对应全局地址。全局 `to` 地址还会在
+发送前移除原始 To、Cc 和 Bcc 收件人，适合开发环境使用。
 
-## Creating a Mailable
+## 创建 Mailable
 
-With `hyperf/devtool` installed, generate a view-based mailable or use `--markdown` to also create a
-Markdown template:
+安装 `hyperf/devtool` 后，可生成基于视图的 mailable；使用 `--markdown` 会同时创建 Markdown 模板：
 
 ```shell
 php bin/hyperf.php gen:mail TestMail
 php bin/hyperf.php gen:mail TestMail --markdown
 ```
 
-`Envelope` defines addresses, subject, tags, metadata, and Symfony message callbacks. `Content`
-accepts `view` (or its `html` alias), `text`, `markdown`, `htmlString`, and `with`. Public properties
-declared by your mailable are also exposed to the view.
+`Envelope` 定义地址、主题、标签、元数据和 Symfony 消息回调。`Content` 接受 `view`（或其 `html`
+别名）、`text`、`markdown`、`htmlString` 和 `with`。mailable 中声明的 public 属性也会暴露给视图。
 
 ```php
 namespace App\Mail;
@@ -128,16 +122,14 @@ class TestMail extends Mailable
 }
 ```
 
-Attachments can also be created with `Attachment::fromData()`, `fromStorage()`, or
-`fromStorageDisk()`. A reusable attachable object may implement
-`FriendsOfHyperf\Mail\Contract\Attachable`.
+附件还可通过 `Attachment::fromData()`、`fromStorage()` 或 `fromStorageDisk()` 创建。可复用的附件
+对象可以实现 `FriendsOfHyperf\Mail\Contract\Attachable`。
 
-## Sending Mail
+## 发送邮件
 
-`Mail::mailer()` selects a configured mailer; omitting its argument uses `mail.default`. The
-`to()`, `cc()`, and `bcc()` methods return a pending mail object whose `send()` method accepts a
-`FriendsOfHyperf\Mail\Contract\Mailable`. Sending returns a `SentMessage` or `null` when a
-`MessageSending` listener stops delivery.
+`Mail::mailer()` 选择已配置的 mailer；省略参数时使用 `mail.default`。`to()`、`cc()` 和 `bcc()`
+返回待发送邮件对象，其 `send()` 接受 `FriendsOfHyperf\Mail\Contract\Mailable`。发送成功时返回
+`SentMessage`；当 `MessageSending` 监听器中止发送时返回 `null`。
 
 ```php
 use App\Mail\TestMail;
@@ -149,10 +141,8 @@ Mail::mailer('smtp')
     ->send(new TestMail('Hyperf'));
 ```
 
-For messages that do not need a mailable class, the mailer also exposes `html()`, `raw()`,
-`plain()`, and `send()` with a view name or view array. The callback receives a
-`FriendsOfHyperf\Mail\Message`, which forwards unknown methods to the underlying Symfony
-`Email`.
+对于无需 mailable 类的邮件，mailer 还提供 `html()`、`raw()`、`plain()`，以及接受视图名或视图数组的
+`send()`。回调会收到 `FriendsOfHyperf\Mail\Message`，其未知方法会转发给底层 Symfony `Email`。
 
 ```php
 use FriendsOfHyperf\Mail\Facade\Mail;
